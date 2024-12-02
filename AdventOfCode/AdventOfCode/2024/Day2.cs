@@ -11,11 +11,34 @@ public class Day2 : IDaySolution
         {
             if (report.ElementAt(0) < report.ElementAt(1))
             {
-                safeReportsCount = CheckIncreasing(report, safeReportsCount);
+                if(CheckIncreasing(report))
+                    safeReportsCount++;
             }
-            safeReportsCount = CheckDecreasing(report, safeReportsCount);
+            if(CheckDecreasing(report))
+                safeReportsCount++;
         }
 
+        return safeReportsCount.ToString();
+    }
+
+    public string Part2()
+    {
+        ReadInput(out var reportLines);
+
+        var safeReportsCount = 0;
+        foreach (var report in reportLines)
+        {
+            if (report.ElementAt(0) < report.ElementAt(1))
+            {
+                if(CheckIncreasingWithDampening(report))
+                    safeReportsCount++;
+            }
+            else
+            {
+                if (CheckDecreasingWithDampening(report))
+                    safeReportsCount++;
+            }
+        }
 
         return safeReportsCount.ToString();
     }
@@ -32,40 +55,85 @@ public class Day2 : IDaySolution
         }
     }
 
-    private static int CheckDecreasing(List<int> report, int safeReportsCount)
+    private static bool CheckDecreasingWithDampening(List<int> report)
     {
-        int num = -1000;
+        if (!CheckDecreasing(report))
+        {
+            var newReports = report.Select(num => new List<int>(report)).ToList();
+            for (var i = 0; i < newReports.Count; i++)
+            {
+                var modifiedReport = newReports.ElementAt(i);
+                modifiedReport.RemoveAt(i);
+                if (modifiedReport.ElementAt(0) < modifiedReport.ElementAt(1))
+                {
+                    if (CheckIncreasing(modifiedReport))
+                        return true;
+                }
+                else
+                {
+                    if (CheckDecreasing(modifiedReport))
+                        return true;
+                }
+            }
+        }
+
+        return CheckDecreasing(report);
+    }
+
+    private static bool CheckIncreasingWithDampening(List<int> report)
+    {
+        if (!CheckIncreasing(report))
+        {
+            var newReports = report.Select(num => new List<int>(report)).ToList();
+            for (var i = 0; i < newReports.Count; i++)
+            {
+                var modifiedReport = newReports.ElementAt(i);
+                modifiedReport.RemoveAt(i);
+                if (modifiedReport.ElementAt(0) < modifiedReport.ElementAt(1))
+                {
+                    if (CheckIncreasing(modifiedReport))
+                        return true;
+                }
+                else
+                {
+                    if (CheckDecreasing(modifiedReport))
+                        return true;
+                }
+            }
+        }
+
+        return CheckIncreasing(report);
+    }
+
+    private static bool CheckDecreasing(List<int> report)
+    {
+        var num = -1000;
         foreach (var number in report)
         {
             if (num is not -1000)
             {
                 var diff = num - number;
                 if(diff is < 1 or > 3)
-                    return safeReportsCount;
+                    return false;
             }
             num = number;
         }
-        return safeReportsCount + 1;
+        return true;
     }
 
-    private static int CheckIncreasing(List<int> report, int safeReportsCount)
+    private static bool CheckIncreasing(List<int> report)
     {
-        int num = -1000;
+        var num = -1000;
         foreach (var number in report)
         {
             if (num is not -1000)
             {
                 var diff = number - num;
                 if (diff is < 1 or > 3)
-                    return safeReportsCount;
+                    return false;
             }
             num = number;
         }
-        return safeReportsCount + 1;
-    }
-
-    public string Part2()
-    {
-        return "null";
+        return true;
     }
 }
