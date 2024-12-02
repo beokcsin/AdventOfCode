@@ -10,7 +10,8 @@ namespace AdventOfCode._2024
     {
         private static readonly Dictionary<int, Func<IDaySolution>> solutions = new()
         {
-            {1, () => new Day1() }
+            {1, () => new Day1() },
+            {2, () => new Day2() }
         };  
 
         public static IDaySolution? GetSolution(int day)
