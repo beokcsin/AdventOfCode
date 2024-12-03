@@ -8,17 +8,18 @@ namespace AdventOfCode._2024
 {
     public class DaySolutionFactory
     {
-        private static readonly Dictionary<int, Func<IDaySolution>> solutions = new()
+        private static readonly Dictionary<int, Func<IDaySolution>> Solutions = new()
         {
             {1, () => new Day1() },
-            {2, () => new Day2() }
+            {2, () => new Day2() },
+            {3, () => new Day3() }
         };  
 
         public static IDaySolution? GetSolution(int day)
         {
             try
             {
-                solutions.TryGetValue(day, out var solution);
+                Solutions.TryGetValue(day, out var solution);
                 return solution();
             }
             catch 
